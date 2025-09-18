@@ -5,7 +5,7 @@ public class Model
 {
 List<Vector3> vertices;
 private List<Vector3Int> faces;
-
+List<Vector2> texture_Coordinates;
 public Model()
 {
   defineVertices();
@@ -48,6 +48,11 @@ void defineVertices()
   
 }
 
+void defineTextureVertices()
+{
+  List<Vector2Int> coords = new List<Vector2Int>();
+  coords.Add(new Vector2Int( 0, 0));
+}
 void defineFaces() {
   // COUNTER-CLOCKWISE FRONT FACE
   faces = new List<Vector3Int>();
@@ -82,7 +87,24 @@ void defineFaces() {
   faces.Add(new Vector3Int(16, 13, 12)); // triangle 15
   faces.Add(new Vector3Int(15, 13, 16)); // triangle 16
   faces.Add(new Vector3Int(14, 13, 15)); // triangle 17
+  faces.Add(new Vector3Int(10, 15, 9)); // triangle 18
   
+  // SIDE FACES
+  // BOTTOM
+  faces.Add(new Vector3Int(1, 2, 10)); // triangle 19
+  faces.Add(new Vector3Int(1, 10, 11)); // triangle 20
+  // FRONT (FLAT PART)
+  faces.Add(new Vector3Int(2, 3, 10)); // triangle 21
+  faces.Add(new Vector3Int(10, 3, 14)); // triangle 22
+  // FRONT (CURVED PART)
+  faces.Add(new Vector3Int(3, 4, 14)); // triangle 23
+  faces.Add(new Vector3Int(14, 4, 13)); // triangle 24
+  // ROOF
+  faces.Add(new Vector3Int(13, 4, 12)); // triangle 25
+  faces.Add(new Vector3Int(12, 4, 5)); // triangle 26
+  // BACK
+  faces.Add(new Vector3Int(11, 12, 1)); // triangle 27
+  faces.Add(new Vector3Int(1, 12, 5)); // triangle 28
 }
 
 public GameObject CreateUnityGameObject()
