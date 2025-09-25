@@ -39,6 +39,7 @@ void defineVertices()
   vertices.Add(new Vector3( -1f,3f,-1f ) ); // 16
   vertices.Add(new Vector3( -1f,-4f,-1f ) );  // 17
   
+  
 }
 
 void defineTextureVertices()
@@ -170,6 +171,15 @@ void defineFaces() {
                                             //texture_index_list.Add(new Vector3Int(1, 12, 5));
         faces.Add(new Vector3Int(11, 12, 1)); texture_index_list.Add(new Vector3Int(23, 24, 22));  normals.Add(new Vector3(-1,0,0));// triangle 27
         faces.Add(new Vector3Int(1, 12, 5)); texture_index_list.Add(new Vector3Int(22, 24, 25));  normals.Add(new Vector3(-1,0,0));// triangle 28
+
+        // INSIDE SIDE FACES
+        // INSIDE BOTTOM
+
+        // INSIDE ROOF
+
+        // INSIDE FRONT
+
+        // INSIDE BACK
 }
 
 public GameObject CreateUnityGameObject()
