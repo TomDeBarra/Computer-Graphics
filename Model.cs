@@ -45,6 +45,7 @@ void defineTextureVertices()
 {
   List<Vector2Int> coords = new List<Vector2Int>();
   
+        
   // FRONT FACE
   coords.Add(new Vector2Int(32, 87)); // point 0
   coords.Add(new Vector2Int(20, 100)); // point 1
@@ -74,7 +75,8 @@ void defineTextureVertices()
   coords.Add(new Vector2Int(19, 106)); // point 20
   coords.Add(new Vector2Int(19, 118)); // point 21
   
-  // BACK
+
+  // BACK /////////////////////////////////////////////////
   coords.Add(new Vector2Int(18, 100)); // point 22
   coords.Add(new Vector2Int(2, 100)); // point 23
   coords.Add(new Vector2Int(2, 28)); // point 24
@@ -100,7 +102,7 @@ void defineTextureVertices()
   coords.Add(new Vector2Int(70, 100)); // point 37
   
   texture_coordinates = convertToRelative(coords);
-
+  
 }
 
 private List<Vector2> convertToRelative(List<Vector2Int> coords)
@@ -109,7 +111,7 @@ private List<Vector2> convertToRelative(List<Vector2Int> coords)
 
   foreach (Vector2Int coord in coords)
   {
-    text_coord.Add(new Vector2(coord.x / 128f, coord.y / 128f));
+    text_coord.Add(new Vector2(coord.x / 128f, 1 - coord.y / 128f));
   }
   return text_coord;
 }
@@ -119,45 +121,55 @@ void defineFaces() {
   faces = new List<Vector3Int>();
   texture_index_list = new List<Vector3Int>();
   normals =  new List<Vector3>();
-  
-  
-  faces.Add(new Vector3Int(1, 5, 6)); texture_index_list.Add(new Vector3Int(1,5,6)); normals.Add(new Vector3(0,0,1));// triangle 1
-  faces.Add(new Vector3Int(1, 0, 2)); texture_index_list.Add(new Vector3Int(1, 0, 2)); normals.Add(new Vector3(0,0,1)); // triangle 2
-  faces.Add(new Vector3Int(1, 6, 0)); texture_index_list.Add(new Vector3Int(1, 6, 0)); normals.Add(new Vector3(0,0,1)); // triangle 9
-  faces.Add(new Vector3Int(2, 0, 8)); texture_index_list.Add(new Vector3Int(2, 0, 8)); normals.Add(new Vector3(0,0,1)); // triangle 3
-  faces.Add(new Vector3Int(2, 8, 3)); texture_index_list.Add(new Vector3Int(2, 8, 3)); normals.Add(new Vector3(0,0,1)); // triangle 4
-  faces.Add(new Vector3Int(8, 7, 3)); texture_index_list.Add(new Vector3Int(8, 7, 3)); normals.Add(new Vector3(0,0,1)); // triangle 5
-  faces.Add(new Vector3Int(7, 4, 3)); texture_index_list.Add(new Vector3Int(7, 4, 3)); normals.Add(new Vector3(0,0,1)); // triangle 6
-  faces.Add(new Vector3Int(6, 4, 7)); texture_index_list.Add(new Vector3Int(6, 4, 7)); normals.Add(new Vector3(0,0,1)); // triangle 7
-  faces.Add(new Vector3Int(6, 5, 4)); texture_index_list.Add(new Vector3Int(6, 5, 4)); normals.Add(new Vector3(0,0,1)); // triangle 8
-   
-  // CLOCKWISE BACKFACE
-  faces.Add(new Vector3Int(10, 14, 15)); texture_index_list.Add(new Vector3Int(10, 14, 15)); normals.Add(new Vector3(0,0,-1)); // triangle 10
-  faces.Add(new Vector3Int(10, 9, 11)); texture_index_list.Add(new Vector3Int(10, 9, 11));  normals.Add(new Vector3(0,0,-1));  // triangle 11
-  faces.Add(new Vector3Int(9, 17, 11)); texture_index_list.Add(new Vector3Int(9, 17, 11));  normals.Add(new Vector3(0,0,-1));  // triangle 12
-  faces.Add(new Vector3Int(17, 16, 11)); texture_index_list.Add(new Vector3Int(17, 16, 11));  normals.Add(new Vector3(0,0,-1));  // triangle 13
-  faces.Add(new Vector3Int(11, 16, 12)); texture_index_list.Add(new Vector3Int(11, 16, 12));  normals.Add(new Vector3(0,0,-1));  // triangle 14
-  faces.Add(new Vector3Int(16, 13, 12)); texture_index_list.Add(new Vector3Int(16, 13, 12));  normals.Add(new Vector3(0,0,-1));  // triangle 15
-  faces.Add(new Vector3Int(15, 13, 16)); texture_index_list.Add(new Vector3Int(15, 13, 16));  normals.Add(new Vector3(0,0,-1));  // triangle 16
-  faces.Add(new Vector3Int(14, 13, 15)); texture_index_list.Add(new Vector3Int(14, 13, 15));  normals.Add(new Vector3(0,0,-1));  // triangle 17
-  faces.Add(new Vector3Int(10, 15, 9)); texture_index_list.Add(new Vector3Int(10, 15, 9));  normals.Add(new Vector3(0,0,-1));  // triangle 18
-  
-  // SIDE FACES
-  // BOTTOM
-  faces.Add(new Vector3Int(1, 2, 10)); texture_index_list.Add(new Vector3Int(1, 2, 10));  normals.Add(new Vector3(0,0,1));  // triangle 19
-  faces.Add(new Vector3Int(1, 10, 11)); texture_index_list.Add(new Vector3Int(1, 10, 11));  normals.Add(new Vector3(0,0,1));  // triangle 20
-  // FRONT (FLAT PART)
-  faces.Add(new Vector3Int(2, 3, 10)); texture_index_list.Add(new Vector3Int(2, 3, 10));  normals.Add(new Vector3(0,0,1));  // triangle 21
-  faces.Add(new Vector3Int(10, 3, 14)); texture_index_list.Add(new Vector3Int(10, 3, 14));  normals.Add(new Vector3(0,0,1));  // triangle 22
-  // FRONT (CURVED PART)
-  faces.Add(new Vector3Int(3, 4, 14)); texture_index_list.Add(new Vector3Int(3, 4, 14));  normals.Add(new Vector3(0,0,1)); // triangle 23
-  faces.Add(new Vector3Int(14, 4, 13)); texture_index_list.Add(new Vector3Int(14, 4, 13));  normals.Add(new Vector3(0,0,1)); // triangle 24
-  // ROOF
-  faces.Add(new Vector3Int(13, 4, 12)); texture_index_list.Add(new Vector3Int(13, 4, 12));  normals.Add(new Vector3(0,0,1));// triangle 25
-  faces.Add(new Vector3Int(12, 4, 5)); texture_index_list.Add(new Vector3Int(12, 4, 5));  normals.Add(new Vector3(0,0,1));// triangle 26
-  // BACK
-  faces.Add(new Vector3Int(11, 12, 1)); texture_index_list.Add(new Vector3Int(11, 12, 1));  normals.Add(new Vector3(0,0,1));// triangle 27
-  faces.Add(new Vector3Int(1, 12, 5)); texture_index_list.Add(new Vector3Int(1, 12, 5));  normals.Add(new Vector3(0,0,1));// triangle 28
+
+        
+        faces.Add(new Vector3Int(1, 5, 6)); texture_index_list.Add(new Vector3Int(1,5,6)); normals.Add(new Vector3(0,0,-1));// triangle 1
+        faces.Add(new Vector3Int(1, 0, 2)); texture_index_list.Add(new Vector3Int(1, 0, 2)); normals.Add(new Vector3(0,0,-1)); // triangle 2
+        faces.Add(new Vector3Int(1, 6, 0)); texture_index_list.Add(new Vector3Int(1, 6, 0)); normals.Add(new Vector3(0,0,-1)); // triangle 9
+        faces.Add(new Vector3Int(2, 0, 8)); texture_index_list.Add(new Vector3Int(2, 0, 8)); normals.Add(new Vector3(0,0,-1)); // triangle 3
+        faces.Add(new Vector3Int(2, 8, 3)); texture_index_list.Add(new Vector3Int(2, 8, 3)); normals.Add(new Vector3(0,0,-1)); // triangle 4
+        faces.Add(new Vector3Int(8, 7, 3)); texture_index_list.Add(new Vector3Int(8, 7, 3)); normals.Add(new Vector3(0,0,-1)); // triangle 5
+        faces.Add(new Vector3Int(7, 4, 3)); texture_index_list.Add(new Vector3Int(7, 4, 3)); normals.Add(new Vector3(0,0,-1)); // triangle 6
+        faces.Add(new Vector3Int(6, 4, 7)); texture_index_list.Add(new Vector3Int(6, 4, 7)); normals.Add(new Vector3(0,0,-1)); // triangle 7
+        faces.Add(new Vector3Int(6, 5, 4)); texture_index_list.Add(new Vector3Int(6, 5, 4)); normals.Add(new Vector3(0,0,-1)); // triangle 8
+
+        // CLOCKWISE BACKFACE
+        faces.Add(new Vector3Int(10, 14, 15)); texture_index_list.Add(new Vector3Int(10, 14, 15)); normals.Add(new Vector3(0,0,1)); // triangle 10
+        faces.Add(new Vector3Int(10, 9, 11)); texture_index_list.Add(new Vector3Int(10, 9, 11));  normals.Add(new Vector3(0,0,1));  // triangle 11
+        faces.Add(new Vector3Int(9, 17, 11)); texture_index_list.Add(new Vector3Int(9, 17, 11));  normals.Add(new Vector3(0,0,1));  // triangle 12
+        faces.Add(new Vector3Int(17, 16, 11)); texture_index_list.Add(new Vector3Int(17, 16, 11));  normals.Add(new Vector3(0,0,1));  // triangle 13
+        faces.Add(new Vector3Int(11, 16, 12)); texture_index_list.Add(new Vector3Int(11, 16, 12));  normals.Add(new Vector3(0,0,1));  // triangle 14
+        faces.Add(new Vector3Int(16, 13, 12)); texture_index_list.Add(new Vector3Int(16, 13, 12));  normals.Add(new Vector3(0,0,1));  // triangle 15
+        faces.Add(new Vector3Int(15, 13, 16)); texture_index_list.Add(new Vector3Int(15, 13, 16));  normals.Add(new Vector3(0,0,1));  // triangle 16
+        faces.Add(new Vector3Int(14, 13, 15)); texture_index_list.Add(new Vector3Int(14, 13, 15));  normals.Add(new Vector3(0,0,1));  // triangle 17
+        faces.Add(new Vector3Int(10, 15, 9)); texture_index_list.Add(new Vector3Int(10, 15, 9));  normals.Add(new Vector3(0,0,1));  // triangle 18
+
+        // SIDE FACES
+        // BOTTOM                               
+                                            // texture_index_list.Add(new Vector3Int(1, 2, 10));
+                                            // texture_index_list.Add(new Vector3Int(1, 10, 11));
+        faces.Add(new Vector3Int(1, 2, 10)); texture_index_list.Add(new Vector3Int(21, 18, 19));  normals.Add(new Vector3(0,-1,0));  // triangle 19
+        faces.Add(new Vector3Int(1, 10, 11)); texture_index_list.Add(new Vector3Int(21, 19, 20));  normals.Add(new Vector3(0,-1,0));  // triangle 20
+        // FRONT (FLAT PART)                
+                                            // texture_index_list.Add(new Vector3Int(2, 3, 10));
+                                            // texture_index_list.Add(new Vector3Int(10, 3, 14));
+        faces.Add(new Vector3Int(2, 3, 10)); texture_index_list.Add(new Vector3Int(35, 34, 37));  normals.Add(new Vector3(1,0,1));  // triangle 21
+        faces.Add(new Vector3Int(10, 3, 14)); texture_index_list.Add(new Vector3Int(37, 34, 36));  normals.Add(new Vector3(1,0,1));  // triangle 22
+        // FRONT (CURVED PART)
+                                             // texture_index_list.Add(new Vector3Int(3, 4, 14));
+                                            // texture_index_list.Add(new Vector3Int(14, 4, 13));
+        faces.Add(new Vector3Int(3, 4, 14)); texture_index_list.Add(new Vector3Int(31, 30, 33));  normals.Add((new Vector3(1,1,0)).normalized); // triangle 23
+        faces.Add(new Vector3Int(14, 4, 13)); texture_index_list.Add(new Vector3Int(33, 30, 32));  normals.Add((new Vector3(1,1,0)).normalized); // triangle 24
+        // ROOF
+                                            // texture_index_list.Add(new Vector3Int(13, 4, 12));
+                                            // texture_index_list.Add(new Vector3Int(12, 4, 5));
+        faces.Add(new Vector3Int(13, 4, 12)); texture_index_list.Add(new Vector3Int(27, 26, 29));  normals.Add(new Vector3(0,1,0));// triangle 25
+        faces.Add(new Vector3Int(12, 4, 5)); texture_index_list.Add(new Vector3Int(29, 26, 28));  normals.Add(new Vector3(0,1,0));// triangle 26
+              
+        // BACK                               texture_index_list.Add(new Vector3Int(11, 12, 1));
+                                            //texture_index_list.Add(new Vector3Int(1, 12, 5));
+        faces.Add(new Vector3Int(11, 12, 1)); texture_index_list.Add(new Vector3Int(23, 24, 22));  normals.Add(new Vector3(-1,0,0));// triangle 27
+        faces.Add(new Vector3Int(1, 12, 5)); texture_index_list.Add(new Vector3Int(22, 24, 25));  normals.Add(new Vector3(-1,0,0));// triangle 28
 }
 
 public GameObject CreateUnityGameObject()
