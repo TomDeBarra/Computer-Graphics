@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GraphicsPipeline : MonoBehaviour
@@ -46,6 +47,14 @@ public class GraphicsPipeline : MonoBehaviour
         writeVectorsToFile(imageAfterScale, " After Scale (and Rotation)", " ---------------");
         Matrix4x4 viewingMatrix = Matrix4x4.LookAt(new Vector3(), new Vector3(), new Vector3());
         Matrix4x4 projection = Matrix4x4.Perspective(90, 1, 1, 1000);
+          /////////////////////////////////////////////// my stuff below
+          
+        Matrix4x4 translationMatrix =
+            Matrix4x4.TRS(new Vector3(),
+                Quaternion.identity,
+                Vector3.one);
+        
+        applyTransformation(verts, translationMatrix);
         writer.Close();
     }
 
