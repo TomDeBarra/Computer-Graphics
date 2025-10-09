@@ -20,11 +20,13 @@ public class GraphicsPipeline : MonoBehaviour
         writeVectorsToFile(verts, " Vertices of my letter ", " ---------- ");
 
 
-
-       Vector3 axis = (new Vector3(-2,1,1)).normalized;
+        // old: Vector3 axis = (new Vector3(-2,1,1)).normalized;
+        // old: Quaternion.AngleAxis(-25, axis)
+        // new
+       Vector3 axis = (new Vector3(20,1,1)).normalized;
         Matrix4x4 rotationMatrix =
             Matrix4x4.TRS(Vector3.zero,
-                        Quaternion.AngleAxis(-25, axis),
+                        Quaternion.AngleAxis(35, axis),
                         Vector3.one);
 
         writeMatrixToFile(rotationMatrix, "Rotation Matrix", "  ---------  ");
@@ -33,11 +35,12 @@ public class GraphicsPipeline : MonoBehaviour
             applyTransformation(verts, rotationMatrix);
 
         writeVectorsToFile(imageAfterRotation, " Verts after Rotation ", " -----------------");
-
+        
         Matrix4x4 scaleMatrix =
             Matrix4x4.TRS(Vector3.zero,
             Quaternion.identity,
-            new Vector3(2, 2, 1));
+            new Vector3(20, 2, 1));
+        // old: new Vector3(2, 2, 1)
 
         writeMatrixToFile(scaleMatrix, " Scale Matrix ", " ----------------  ");
 
@@ -45,17 +48,25 @@ public class GraphicsPipeline : MonoBehaviour
             applyTransformation(imageAfterRotation, scaleMatrix);
 
         writeVectorsToFile(imageAfterScale, " After Scale (and Rotation)", " ---------------");
-        Matrix4x4 viewingMatrix = Matrix4x4.LookAt(new Vector3(), new Vector3(), new Vector3());
+        // old: Matrix4x4 viewingMatrix = Matrix4x4.LookAt(new Vector3(), new Vector3(), new Vector3());
+        
+        Matrix4x4 viewingMatrix = Matrix4x4.LookAt(
+            new Vector3(22, 5, 52),   // camera position
+            new Vector3(2, 2, 2),     // look at
+            new Vector3(3, 3, 20));   // up
         Matrix4x4 projection = Matrix4x4.Perspective(90, 1, 1, 1000);
-          /////////////////////////////////////////////// my stuff below
-          
+  
+        // old: new Vector3()
         Matrix4x4 translationMatrix =
-            Matrix4x4.TRS(new Vector3(),
+            Matrix4x4.TRS(new Vector3(0, 3, 3),
                 Quaternion.identity,
                 Vector3.one);
         
-        applyTransformation(verts, translationMatrix);
+       // applyTransformation(verts, translationMatrix);
+       // Don't know if this is right
+       
         writer.Close();
+        
     }
 
     private void writeMatrixToFile(Matrix4x4 matrix, string before, string after)
