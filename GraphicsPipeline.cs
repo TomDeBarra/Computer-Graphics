@@ -185,6 +185,27 @@ public class GraphicsPipeline : MonoBehaviour
             { print(rotationMatrix.GetRow( i)); }
     }
 
+    bool LineClip(ref Vector2 start, ref Vector2 end)
+    {
+        // Test for trivial acceptance
+        OutCode startOC = new OutCode(start);
+        OutCode endOC = new OutCode(end);
+        OutCode inViewPort = new OutCode();
+
+        if ((startOC + endOC) == inViewPort)
+        {
+            return true;
+        }
+        
+        // Test for trivial rejection
+
+        if ((startOC * endOC) != inViewPort)
+        {
+            return false;
+        }
+        
+        return false;
+    }
     // Update is called once per frame
     void Update()
     {
