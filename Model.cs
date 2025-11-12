@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Model
 {
-List<Vector3> vertices;
+public List<Vector3> vertices;
 private List<Vector3Int> faces;
 List<Vector2> texture_coordinates;
 private List<Vector3Int> texture_index_list;

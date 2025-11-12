@@ -132,6 +132,17 @@ public class GraphicsPipeline : MonoBehaviour
 
         writer.Close();
         
+        OutCode o1 =  new OutCode();
+        OutCode o2 = new OutCode(new Vector2(0, 2));
+        OutCode o3 = new OutCode(true,false,false,true);
+        
+        o1.printFunction();
+        o2.printFunction();
+        OutCode o4 = o1 + o2;
+        o4.printFunction();
+        
+        OutCode o5 = new OutCode(new Vector2(0, 2));
+        OutCode o6 = new OutCode(new Vector2(0, 3));
     }
 
     private void writeMatrixToFile(Matrix4x4 matrix, string before, string after)
@@ -159,14 +170,11 @@ public class GraphicsPipeline : MonoBehaviour
     private List<Vector4> convertToHomg(List<Vector3> vertices)
     {
         List<Vector4> output = new List<Vector4>();
-
         foreach (Vector3 v in vertices)
         {
             output.Add(new Vector4(v.x, v.y, v.z, 1.0f));
-
         }
         return output;
-
     }
 
     private List<Vector4> applyTransformation
@@ -206,7 +214,91 @@ public class GraphicsPipeline : MonoBehaviour
         
         return false;
     }
-    // Update is called once per frame
+
+
+    Vector2 intercept(Vector2 start, Vector2 end, int edgeIndex)
+    {
+        if (end.x != start.x)
+        {
+            float m = (end.y - start.y) / (end.x - start.x);
+            switch (edgeIndex)
+            {
+                case 0: //Top Edge - Y = 1
+                    //   x = x1 + (1/m) *(y - y1)
+                    if (m != 0)
+                    {
+                        return new Vector2(start.x + (1 / m) * (1 - start.y), 1);
+                    }
+                    else
+                    {
+                        switch (edgeIndex)
+                        {
+                            case 0: //Top Edge - Y = 1
+                                if (start.y == 1)
+                                    return new Vector2(1, 1);
+                                else
+                                {
+                                    print("Warning No intercept");
+                                    return new Vector2(float.NaN, float.NaN);
+                                }
+                               
+                            case 1: //Bottom Edge - Y = -1
+                                if (start.y == -1)
+                                    return new Vector2(-1, -1);
+                                else
+                                {
+                                    print("Warning No intercept");
+                                    return new Vector2(float.NaN, float.NaN);
+                                }
+                            case 2: //Left Edge - X = -1
+                             return new Vector2(-1, start.y);
+                            default: // Right Edge - X = 1 
+                                return new Vector2(1, start.y);
+
+                        }
+                    }
+                    break;
+                case 1: //Bottom Edge - Y = -1
+                    break;
+                case 2: //Left Edge - X = -1
+                    
+                    return new Vector2(-1, start.y + m * (-1 - start.x));
+                default: // Right Edge - X = 1 
+                    return new Vector2(1, start.y + m * (1 - start.x));
+
+            }
+        }
+        else
+        {
+            switch (edgeIndex)
+            {
+                case 0: //Top Edge - Y = 1
+
+                    return new Vector2(start.x, 1);
+                case 1: //Bottom Edge - Y = -1
+                    return new Vector2(start.x, -1);
+                case 2: //Left Edge - X = -1
+                    if (start.x == -1)
+                        return new Vector2(-1, -1);
+                    else
+                    {
+                        print("Warning No intercept");
+                        return new Vector2(float.NaN, float.NaN);
+                    }
+                default: // Right Edge - X = 1 
+                    if (start.x == 1)
+                        return new Vector2(1, 1);
+                    else
+                    {
+                        print("Warning No intercept");
+                        return new Vector2(float.NaN, float.NaN);
+                    }
+
+            }
+        }
+        return Vector2.zero;
+    }
+    // Update is called once per frame 
     void Update()
     {
         
