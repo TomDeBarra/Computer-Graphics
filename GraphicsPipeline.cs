@@ -143,6 +143,18 @@ public class GraphicsPipeline : MonoBehaviour
         
         OutCode o5 = new OutCode(new Vector2(0, 2));
         OutCode o6 = new OutCode(new Vector2(0, 3));
+        
+        Vector2 s = new Vector2(-2,0);
+        Vector2 e = new Vector2(2,0);
+        print(intercept(s, e, 2));
+
+        if (LineClip(ref s, ref e))
+        {
+            print(s);
+            print(e);
+        }
+        else
+        { print("Line rejected"); }
     }
 
     private void writeMatrixToFile(Matrix4x4 matrix, string before, string after)
@@ -214,8 +226,7 @@ public class GraphicsPipeline : MonoBehaviour
         
         return false;
     }
-
-
+    
     Vector2 intercept(Vector2 start, Vector2 end, int edgeIndex)
     {
         if (end.x != start.x)
