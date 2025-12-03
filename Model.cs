@@ -4,10 +4,10 @@ using UnityEngine;
 public class Model
 {
 public List<Vector3> vertices;
-private List<Vector3Int> faces;
-List<Vector2> texture_coordinates;
-private List<Vector3Int> texture_index_list;
-private List<Vector3> normals;
+internal List<Vector3Int> faces;
+internal List<Vector2> texture_coordinates;
+internal List<Vector3Int> texture_index_list;
+internal List<Vector3> normals;
 public Model()
 {
   defineVertices();

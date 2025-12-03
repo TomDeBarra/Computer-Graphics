@@ -2,15 +2,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
+using System.Runtime.InteropServices.ComTypes;
 using Unity.Mathematics;
 using UnityEngine;
+using Matrix4x4 = UnityEngine.Matrix4x4;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
+using Vector4 = UnityEngine.Vector4;
+
 
 public class GraphicsPipeline : MonoBehaviour
 {
     StreamWriter writer;
+    GameObject screenGO;
+    Renderer screen;
+    Model myModel;
     // Start is called before the first frame update
     void Start()
     {
+        screen = screenGO.GetComponent<Renderer>();
         writer = new StreamWriter("Data.txt",false);
 
         Model myModel = new Model();
@@ -309,9 +321,126 @@ public class GraphicsPipeline : MonoBehaviour
         }
         return Vector2.zero;
     }
-    // Update is called once per frame 
+
+    private void drawLine(Vector2Int start, Vector2Int end, Texture2D texture)
+    {
+        SetPixels(Bresenham(start, end), texture);
+    }
+
+    private void SetPixels(List<Vector2Int> vector2Ints, Texture2D fb)
+    {
+        foreach (Vector2Int p in vector2Ints)
+        {
+            fb.SetPixel(p.x, p.y, Color.red);
+        }
+    }
+
+    private List<Vector2Int> pixelize(List<Vector4> projectedVerts, int resX, int resY)
+    {
+        // first project
+        List<Vector2Int> output = new List<Vector2Int> ();
+        foreach (Vector4 v in projectedVerts)
+        {
+            Vector2 ndc = new Vector2(v.x / v.w, v.y / v.w);
+            Vector2Int pixel = new Vector2Int((int) ((ndc.x + 1) * 0.5f * (resX - 1)), (int)((ndc.y + 1) * 0.5f * (resY - 1)));
+            output.Add(pixel);
+        }
+
+        return output;
+    }
+
+    private List<Vector2Int> Bresenham(Vector2Int Start, Vector2Int End)
+    {
+        List<Vector2Int> points = new List<Vector2Int>();
+
+        int dx = End.x - Start.x;
+
+        if (dx < 0) return Bresenham(End, Start);
+
+        int dy = End.y - Start.y;
+
+        if (dy < 0)
+            return NegY(Bresenham(NegY(Start), NegY(End)));
+
+        if (dy > dx)
+            return SwapXY(Bresenham(SwapXY(Start), SwapXY(End)));
+
+        int neg = 2 * (dy - dx);
+        int pos = 2 * dy;
+        int p = 2 * dy - dx;
+
+        for (int x = Start.x, y = Start.y; x <= End.x; x++)
+        {
+            points.Add(new Vector2Int(x, y));
+            if (p < 0)
+            {
+                p += pos;
+            }
+            else
+            {
+                y++;
+                p += neg;
+            }
+        }
+        return points;
+    }
+
+
+    private List<Vector2Int> SwapXY(List<Vector2Int> l)
+    {
+        List<Vector2Int> hold = new List<Vector2Int>();
+        foreach (Vector2Int v in l)
+            hold.Add(SwapXY(v));
+
+        return hold;
+    }
+
+    private Vector2Int SwapXY(Vector2Int v)
+    {
+        return new Vector2Int(v.y, v.x);
+    }
+
+    private List<Vector2Int> NegY(List<Vector2Int> l)
+    {
+        List<Vector2Int> hold = new List<Vector2Int>();
+        foreach (Vector2Int v in l)
+            hold.Add(NegY(v));
+        return hold;
+    }
+
+    private Vector2Int NegY(Vector2Int v)
+    {
+        return new Vector2Int(v.x, -v.y);
+    }
+    
     void Update()
     {
+        List<Vector4> verts4 = convertToHomg(myModel.vertices);
         
+        Matrix4x4 worldMatrix = Matrix4x4.TRS(new Vector3(0, 0, 10), Quaternion.identity, Vector3.one);
+        Matrix4x4 rot = Matrix4x4.TRS(Vector3.zero, Quaternion.AngleAxis(Time.time * 10, new Vector3(0, 1, 0)),
+            Vector3.one);
+        worldMatrix *= rot;
+        Matrix4x4 viewMatrix = Matrix4x4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 0, 10), new Vector3(0, 1, 0));
+        Matrix4x4 projectionMat = Matrix4x4.Perspective(90, 1, 1, 1000);
+        Matrix4x4 mvp = projectionMat * viewMatrix * worldMatrix;
+        List<Vector4> projectedVerts = applyTransformation(verts4, mvp);
+        List<Vector2Int> pixelPoints = pixelize(projectedVerts, 512, 512);
+
+        List<Vector3Int> faces = myModel.faces;
+        Texture2D fb = new Texture2D(512, 512);
+        foreach (Vector3Int face in faces)
+        {
+            Vector2Int v1 = pixelPoints[face.x];
+            Vector2Int v2 = pixelPoints[face.y];
+            Vector2Int v3 = pixelPoints[face.z];
+            
+            drawLine(v1, v2, fb);
+            drawLine(v2, v3, fb);
+            drawLine(v3, v1, fb);
+        }
+        
+        screen.material.mainTexture = fb;
+        fb.Apply();
     }
 }
