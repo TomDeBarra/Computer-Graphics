@@ -437,6 +437,9 @@ public class GraphicsPipeline : MonoBehaviour
         Matrix4x4 viewMatrix = Matrix4x4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 0, 10), new Vector3(0, 1, 0));
         Matrix4x4 projectionMat = Matrix4x4.Perspective(90, 1, 1, 1000);
         Matrix4x4 mvp = projectionMat * viewMatrix * worldMatrix;
+        
+        List<Vector4> viewVerts = applyTransformation(verts4, viewMatrix * worldMatrix); // backface culling
+        // get verts before projection ^^^^^^^^
         List<Vector4> projectedVerts = applyTransformation(verts4, mvp);
         
         List<Vector2Int> pixelPoints = pixelize(projectedVerts, 512, 512);
@@ -444,7 +447,11 @@ public class GraphicsPipeline : MonoBehaviour
         List<Vector3Int> faces = myModel.faces;
         Texture2D fb = new Texture2D(512, 512);
         foreach (Vector3Int face in faces)
-        {
+        {   
+            // more backface culling
+            if (isFaceVisible(face, viewVerts))
+                continue; // skip invisible face
+            
             Vector2Int v1 = pixelPoints[face.x];
             Vector2Int v2 = pixelPoints[face.y];
             Vector2Int v3 = pixelPoints[face.z];
@@ -471,5 +478,21 @@ public class GraphicsPipeline : MonoBehaviour
             foreach (var p in pts)
                 texture.SetPixel(p.x, p.y, col);
         }
+    }
+    
+    private bool isFaceVisible(Vector3Int face, List<Vector4> viewVerts) // derive surface normal for face then check z-value
+    {
+        // vertex positions in view space before projection
+        Vector3 v0 = viewVerts[face.x];
+        Vector3 v1 = viewVerts[face.y];
+        Vector3 v2 = viewVerts[face.z];
+
+        // two edges of triangle
+        Vector3 e1 = v1 - v0;
+        Vector3 e2 = v2 - v0;
+        
+        Vector3 normal = Vector3.Cross(e1, e2); // n = (b - a) × (c - a) formula
+        
+        return normal.z < 0f;
     }
 }
