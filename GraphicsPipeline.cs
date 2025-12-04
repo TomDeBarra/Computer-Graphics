@@ -434,6 +434,11 @@ public class GraphicsPipeline : MonoBehaviour
         Matrix4x4 rot = Matrix4x4.TRS(Vector3.zero, Quaternion.AngleAxis(Time.time * 10, new Vector3(0, 1, 0)),
             Vector3.one);
         worldMatrix *= rot;
+
+	// Matrix4x4 worldMatrix = rot * Matrix4x4.TRS(new Vector3(0, 0, 10), Quaternion.identity, Vector3.one);
+	// Replacing worldMatrix with above code rotates in and out of screen, but could not get it to work
+	// without breaking (I was unable to implement line clipping)
+	
         Matrix4x4 viewMatrix = Matrix4x4.LookAt(new Vector3(0, 0, 0), new Vector3(0, 0, 10), new Vector3(0, 1, 0));
         Matrix4x4 projectionMat = Matrix4x4.Perspective(90, 1, 1, 1000);
         Matrix4x4 mvp = projectionMat * viewMatrix * worldMatrix;
@@ -452,6 +457,11 @@ public class GraphicsPipeline : MonoBehaviour
             if (isFaceVisible(face, viewVerts))
                 continue; // skip invisible face
             
+	 // I could not get the clipping to work
+	 //   if (LineClip(ref p1, ref p2))
+         //  {
+         //  }
+
             Vector2Int v1 = pixelPoints[face.x];
             Vector2Int v2 = pixelPoints[face.y];
             Vector2Int v3 = pixelPoints[face.z];
@@ -478,6 +488,7 @@ public class GraphicsPipeline : MonoBehaviour
             foreach (var p in pts)
                 texture.SetPixel(p.x, p.y, col);
         }
+ 	 
     }
     
     private bool isFaceVisible(Vector3Int face, List<Vector4> viewVerts) // derive surface normal for face then check z-value
