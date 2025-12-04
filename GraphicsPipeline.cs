@@ -16,16 +16,19 @@ using Vector4 = UnityEngine.Vector4;
 public class GraphicsPipeline : MonoBehaviour
 {
     StreamWriter writer;
-    GameObject screenGO;
+    public GameObject screenGO;
     Renderer screen;
     Model myModel;
+
+   
+    
     // Start is called before the first frame update
     void Start()
     {
         screen = screenGO.GetComponent<Renderer>();
         writer = new StreamWriter("Data.txt",false);
 
-        Model myModel = new Model();
+        myModel = new Model();
 
         List<Vector3> verts3 = myModel.vertices;
         List<Vector4> verts = convertToHomg(verts3);
@@ -348,6 +351,16 @@ public class GraphicsPipeline : MonoBehaviour
 
         return output;
     }
+    
+    // Put here so I can use code copied from Rob
+    
+    private Vector2Int convertToPixel(Vector2 p, int width, int height)
+    {
+        return new Vector2Int(
+            (int)((p.x + 1) * (width - 1) / 2f),
+            (int)((p.y + 1) * (height - 1) / 2f)
+        );
+    }
 
     private List<Vector2Int> Bresenham(Vector2Int Start, Vector2Int End)
     {
@@ -425,6 +438,7 @@ public class GraphicsPipeline : MonoBehaviour
         Matrix4x4 projectionMat = Matrix4x4.Perspective(90, 1, 1, 1000);
         Matrix4x4 mvp = projectionMat * viewMatrix * worldMatrix;
         List<Vector4> projectedVerts = applyTransformation(verts4, mvp);
+        
         List<Vector2Int> pixelPoints = pixelize(projectedVerts, 512, 512);
 
         List<Vector3Int> faces = myModel.faces;
@@ -442,5 +456,20 @@ public class GraphicsPipeline : MonoBehaviour
         
         screen.material.mainTexture = fb;
         fb.Apply();
+    }
+    
+    private void drawLine(Vector2 v1, Vector2 v2, Texture2D texture, Color col)
+    {
+        Vector2 s = v1;
+        Vector2 e = v2;
+
+        if (LineClip(ref s, ref e))
+        {
+            List<Vector2Int> pts = Bresenham(convertToPixel(s, texture.width, texture.height),
+                convertToPixel(e, texture.width, texture.height));
+            
+            foreach (var p in pts)
+                texture.SetPixel(p.x, p.y, col);
+        }
     }
 }
